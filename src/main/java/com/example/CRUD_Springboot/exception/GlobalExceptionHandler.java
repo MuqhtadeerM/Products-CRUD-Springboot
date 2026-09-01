@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.Map;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import com.example.CRUD_Springboot.exception.InvalidCredentialsException;
 
 import java.util.HashMap;
 
@@ -21,6 +22,19 @@ public class GlobalExceptionHandler {
                 "timestamp", LocalDateTime.now(),
                 "status", 404,
                 "error", "NOT_FOUND",
+                "message", exception.getMessage()
+        );
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public Map<String, Object> handleInvalidCredentials(
+            InvalidCredentialsException exception) {
+
+        return Map.of(
+                "timestamp", LocalDateTime.now(),
+                "status", 401,
+                "error", "UNAUTHORIZED",
                 "message", exception.getMessage()
         );
     }
