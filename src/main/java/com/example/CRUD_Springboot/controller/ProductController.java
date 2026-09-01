@@ -1,5 +1,7 @@
 package com.example.CRUD_Springboot.controller;
 
+import com.example.CRUD_Springboot.dto.ProductRequest;
+import com.example.CRUD_Springboot.dto.ProductResponse;
 import com.example.CRUD_Springboot.entity.Product;
 import com.example.CRUD_Springboot.service.ProductService;
 import org.springframework.web.bind.annotation.*;
@@ -22,13 +24,15 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public String getProductById(@PathVariable Long id) {
-        return "Get product with id: " + id;
+    public ProductResponse getProductById(@PathVariable Long id) {
+        return productService.getProductById(id);
     }
 
     @PostMapping
-    public String createProduct() {
-        return "Create product";
+    public ProductResponse createProduct(
+            @RequestBody ProductRequest request) {
+
+        return productService.createProduct(request);
     }
 
     @PutMapping("/{id}")

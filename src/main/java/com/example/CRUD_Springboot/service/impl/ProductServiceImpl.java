@@ -1,5 +1,5 @@
 package com.example.CRUD_Springboot.service.impl;
-
+import com.example.CRUD_Springboot.exception.ResourceNotFoundException;
 import com.example.CRUD_Springboot.dto.ProductMapper;
 import com.example.CRUD_Springboot.dto.ProductRequest;
 import com.example.CRUD_Springboot.dto.ProductResponse;
@@ -37,5 +37,18 @@ public class ProductServiceImpl implements ProductService {
         Product savedProduct = productRepository.save(product);
 
         return ProductMapper.toResponse(savedProduct);
+    }
+
+    @Override
+    public ProductResponse getProductById(Long id) {
+
+        Product product = productRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Product with id " + id + " not found"
+                        )
+                );
+
+        return ProductMapper.toResponse(product);
     }
 }
