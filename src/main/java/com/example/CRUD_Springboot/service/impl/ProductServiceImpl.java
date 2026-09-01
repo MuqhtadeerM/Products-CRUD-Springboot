@@ -7,6 +7,9 @@ import com.example.CRUD_Springboot.entity.Product;
 import com.example.CRUD_Springboot.repository.ProductRepository;
 import com.example.CRUD_Springboot.service.ProductService;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import com.example.CRUD_Springboot.dto.ProductUpdateRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,8 +24,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getProducts() {
-        return productRepository.findAll();
+    public Page<ProductResponse> getProducts(Pageable pageable) {
+
+        Page<Product> products = productRepository.findAll(pageable);
+
+        return products.map(ProductMapper::toResponse);
     }
 
     @Override
@@ -50,5 +56,26 @@ public class ProductServiceImpl implements ProductService {
                 );
 
         return ProductMapper.toResponse(product);
+    }
+
+    @Override
+    public ProductResponse updateProduct(
+            Long id,
+            ProductUpdateRequest request) {
+
+        Product product = productRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Product with id " + id + " not found"
+                        )
+                );
+
+        product.setProductName(request.getProductName());
+        product.setModifiedBy("system");
+        product.setModifiedOn(LocalDateTime.now());
+
+        Product updatedProduct = productRepository.save(product);
+
+        return ProductMapper.toResponse(updatedProduct);
     }
 }

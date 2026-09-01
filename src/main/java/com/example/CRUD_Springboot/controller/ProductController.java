@@ -5,6 +5,8 @@ import com.example.CRUD_Springboot.dto.ProductResponse;
 import com.example.CRUD_Springboot.entity.Product;
 import com.example.CRUD_Springboot.service.ProductService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -19,8 +21,8 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Product> getProducts() {
-        return productService.getProducts();
+    public Page<ProductResponse> getProducts(Pageable pageable) {
+        return productService.getProducts(pageable);
     }
 
     @GetMapping("/{id}")
