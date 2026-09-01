@@ -1,26 +1,35 @@
 package com.example.CRUD_Springboot.controller;
 
+import com.example.CRUD_Springboot.entity.Product;
+import com.example.CRUD_Springboot.service.ProductService;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/products")
 public class ProductController {
 
+    private final ProductService productService;
+
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
+
     @GetMapping
-    public String getProducts() {
-        return "Get All Products";
+    public List<Product> getProducts() {
+        return productService.getProducts();
     }
 
     @GetMapping("/{id}")
-    public String getProductById(@PathVariable Long id){
-        return "Get Products with id:" + id;
+    public String getProductById(@PathVariable Long id) {
+        return "Get product with id: " + id;
     }
 
     @PostMapping
-    public  String createProduct() {
-        return "create product";
+    public String createProduct() {
+        return "Create product";
     }
-
 
     @PutMapping("/{id}")
     public String updateProduct(@PathVariable Long id) {
