@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import com.example.CRUD_Springboot.dto.ProductUpdateRequest;
 import org.springframework.http.HttpStatus;
 import jakarta.validation.Valid;
+import com.example.CRUD_Springboot.dto.ItemResponse;
+import com.example.CRUD_Springboot.service.ItemService;
 import java.util.List;
 
 @RestController
@@ -17,9 +19,11 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+    private final ItemService itemService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, ItemService itemService) {
         this.productService = productService;
+        this.itemService = itemService;
     }
 
     @GetMapping
@@ -54,7 +58,8 @@ public class ProductController {
     }
 
     @GetMapping("/{id}/items")
-    public String getProductItems(@PathVariable Long id) {
-        return "Get items for product with id: " + id;
+    public List<ItemResponse> getProductItems(@PathVariable Long id) {
+        return itemService.getItemsByProductId(id);
     }
+
 }
