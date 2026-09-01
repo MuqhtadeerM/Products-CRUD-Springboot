@@ -1,7 +1,10 @@
 package com.example.CRUD_Springboot.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class ProductRequest {
 
+    @NotBlank(message = "Product name is required")
     private String productName;
 
     public ProductRequest() {

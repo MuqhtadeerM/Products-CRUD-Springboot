@@ -7,7 +7,9 @@ import com.example.CRUD_Springboot.service.ProductService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
+import com.example.CRUD_Springboot.dto.ProductUpdateRequest;
+import org.springframework.http.HttpStatus;
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -32,19 +34,23 @@ public class ProductController {
 
     @PostMapping
     public ProductResponse createProduct(
-            @RequestBody ProductRequest request) {
+            @Valid @RequestBody ProductRequest request) {
 
         return productService.createProduct(request);
     }
 
     @PutMapping("/{id}")
-    public String updateProduct(@PathVariable Long id) {
-        return "Update product with id: " + id;
+    public ProductResponse updateProduct(
+            @PathVariable Long id,
+            @Valid @RequestBody ProductUpdateRequest request) {
+
+        return productService.updateProduct(id, request);
     }
 
     @DeleteMapping("/{id}")
-    public String deleteProduct(@PathVariable Long id) {
-        return "Delete product with id: " + id;
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
     }
 
     @GetMapping("/{id}/items")

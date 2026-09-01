@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import com.example.CRUD_Springboot.dto.ProductUpdateRequest;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -77,5 +76,18 @@ public class ProductServiceImpl implements ProductService {
         Product updatedProduct = productRepository.save(product);
 
         return ProductMapper.toResponse(updatedProduct);
+    }
+
+    @Override
+    public void deleteProduct(Long id) {
+
+        Product product = productRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Product with id " + id + " not found"
+                        )
+                );
+
+        productRepository.delete(product);
     }
 }
