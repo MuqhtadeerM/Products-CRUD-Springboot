@@ -7,6 +7,7 @@ import com.example.CRUD_Springboot.repository.RefreshTokenRepository;
 import com.example.CRUD_Springboot.service.RefreshTokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -28,22 +29,26 @@ public class RefreshTokenServiceImpl
     }
 
     @Override
+    @Transactional
     public RefreshToken createRefreshToken(User user) {
 
         RefreshToken refreshToken = new RefreshToken();
 
         refreshToken.setToken(UUID.randomUUID().toString());
         refreshToken.setUser(user);
+
         refreshToken.setExpiresAt(
                 LocalDateTime.now()
                         .plusNanos(refreshExpiration * 1_000_000)
         );
+
         refreshToken.setRevoked(false);
 
         return refreshTokenRepository.save(refreshToken);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public RefreshToken verifyRefreshToken(String token) {
 
         RefreshToken refreshToken =
@@ -64,10 +69,16 @@ public class RefreshTokenServiceImpl
                     "Refresh token has expired");
         }
 
+        // User is LAZY-loaded.
+        // @Transactional keeps the persistence context open
+        // while the caller accesses refreshToken.getUser().
+        refreshToken.getUser().getUsername();
+
         return refreshToken;
     }
 
     @Override
+    @Transactional
     public void revokeToken(RefreshToken refreshToken) {
 
         refreshToken.setRevoked(true);

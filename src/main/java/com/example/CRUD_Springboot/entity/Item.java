@@ -3,7 +3,12 @@ package com.example.CRUD_Springboot.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "item")
+@Table(
+        name = "item",
+        indexes = {
+                @Index(name = "idx_item_product_id", columnList = "product_id")
+        }
+)
 public class Item {
 
     @Id
