@@ -42,13 +42,34 @@ public class SecurityConfig {
                                 SessionCreationPolicy.STATELESS))
 
                 .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(
-                                (request, response, authException) ->
-                                        response.sendError(
-                                                HttpStatus.UNAUTHORIZED.value(),
-                                                "Unauthorized"
-                                        )
-                        )
+
+                        .authenticationEntryPoint((request, response, authException) -> {
+
+                            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                            response.setContentType("application/json");
+
+                            response.getWriter().write("""
+            {
+                "status": 401,
+                "error": "UNAUTHORIZED",
+                "message": "Authentication is required"
+            }
+            """);
+                        })
+
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+
+                            response.setStatus(HttpStatus.FORBIDDEN.value());
+                            response.setContentType("application/json");
+
+                            response.getWriter().write("""
+            {
+                "status": 403,
+                "error": "FORBIDDEN",
+                "message": "You do not have permission to perform this operation"
+            }
+            """);
+                        })
                 )
 
                 .authorizeHttpRequests(auth -> auth
