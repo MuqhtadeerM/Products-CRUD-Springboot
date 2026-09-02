@@ -63,4 +63,30 @@ public class GlobalExceptionHandler {
                 "errors", errors
         );
     }
+
+    @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Map<String, Object> handleAccessDenied(
+            org.springframework.security.access.AccessDeniedException exception) {
+
+        return Map.of(
+                "timestamp", LocalDateTime.now(),
+                "status", 403,
+                "error", "FORBIDDEN",
+                "message", "You do not have permission to perform this operation"
+        );
+    }
+
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Map<String, Object> handleGeneralException(Exception exception) {
+
+        return Map.of(
+                "timestamp", LocalDateTime.now(),
+                "status", 500,
+                "error", "INTERNAL_SERVER_ERROR",
+                "message", "An unexpected error occurred"
+        );
+    }
 }

@@ -9,10 +9,10 @@ public class PasswordGenerator {
         BCryptPasswordEncoder encoder =
                 new BCryptPasswordEncoder();
 
-        String hash = encoder.encode("admin123");
+        String hash = encoder.encode("user123");
 
         System.out.println(
-                new BCryptPasswordEncoder().encode("admin123")
+                new BCryptPasswordEncoder().encode("user123")
         );
     }
 }

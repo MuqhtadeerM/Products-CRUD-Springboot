@@ -52,7 +52,34 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/auth/**").permitAll()
+
+                        .requestMatchers("/api/v1/auth/**")
+                        .permitAll()
+
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.POST,
+                                "/api/v1/products"
+                        )
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.PUT,
+                                "/api/v1/products/**"
+                        )
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.DELETE,
+                                "/api/v1/products/**"
+                        )
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.GET,
+                                "/api/v1/products/**"
+                        )
+                        .hasAnyRole("ADMIN", "USER")
+
                         .anyRequest().authenticated()
                 )
 

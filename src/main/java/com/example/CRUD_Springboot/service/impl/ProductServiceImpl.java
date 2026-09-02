@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import com.example.CRUD_Springboot.dto.ProductUpdateRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
 
@@ -33,10 +34,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponse createProduct(ProductRequest request) {
 
+        String username = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
         Product product = new Product();
 
         product.setProductName(request.getProductName());
-        product.setCreatedBy("system");
+        product.setCreatedBy(username);
         product.setCreatedOn(LocalDateTime.now());
 
         Product savedProduct = productRepository.save(product);
@@ -58,19 +64,19 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductResponse updateProduct(
-            Long id,
-            ProductUpdateRequest request) {
+    public ProductResponse updateProduct(Long id, ProductUpdateRequest request) {
 
         Product product = productRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Product with id " + id + " not found"
-                        )
-                );
+                        new ResourceNotFoundException("Product not found with id: " + id));
+
+        String username = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
 
         product.setProductName(request.getProductName());
-        product.setModifiedBy("system");
+        product.setModifiedBy(username);
         product.setModifiedOn(LocalDateTime.now());
 
         Product updatedProduct = productRepository.save(product);

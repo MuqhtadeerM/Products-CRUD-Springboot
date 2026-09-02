@@ -50,4 +50,27 @@ public class AuthServiceImpl implements AuthService {
         return new LoginResponse(accessToken,
                 refreshToken.getToken());
     }
+
+    @Override
+    public LoginResponse refreshToken(String token) {
+
+        RefreshToken oldRefreshToken =
+                refreshTokenService.verifyRefreshToken(token);
+
+        User user = oldRefreshToken.getUser();
+
+        // Rotate the old refresh token
+        refreshTokenService.revokeToken(oldRefreshToken);
+
+        String newAccessToken =
+                jwtService.generateAccessToken(user);
+
+        RefreshToken newRefreshToken =
+                refreshTokenService.createRefreshToken(user);
+
+        return new LoginResponse(
+                newAccessToken,
+                newRefreshToken.getToken()
+        );
+    }
 }

@@ -6,4 +6,5 @@ import com.example.CRUD_Springboot.dto.LoginResponse;
 public interface AuthService {
 
     LoginResponse login(LoginRequest request);
+    LoginResponse refreshToken(String refreshToken);
 }
